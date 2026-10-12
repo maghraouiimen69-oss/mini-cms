@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home']);
@@ -25,3 +26,11 @@ Route::get('/bienvenue', function () {
         'cours' => 'Atelier Framework Côté Serveur',
     ]);
 });
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+Route::get('/posts/archive/{year}', [PostController::class, 'archive'])
+    ->whereNumber('year')
+    ->name('posts.archive');
+
+Route::get('/posts/{slug}', [PostController::class, 'show'])
+    ->where('slug', '[a-z0-9-]+')
+    ->name('posts.show');
