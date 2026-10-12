@@ -13,3 +13,15 @@ Route::get('/heure', function () {
         'date' => now()->format('d/m/Y'),
     ]);
 });
+
+Route::get('/', [PageController::class, 'home'])->name('home');
+
+Route::get('/a-propos', [PageController::class, 'about'])->name('about');
+
+Route::get('/bienvenue', function () {
+    return view('bienvenue', [
+        'etudiant' => 'Imen Maghraoui',
+        'groupe' => 'MDW33',
+        'cours' => 'Atelier Framework Côté Serveur',
+    ]);
+});

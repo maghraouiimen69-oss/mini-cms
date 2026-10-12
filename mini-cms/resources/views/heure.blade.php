@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-    <h1>Il est {{ $maintenant->format('H:i') }}</h1>
-    <p>Nous sommes le {{ $maintenant->format('d/m/Y') }} (fuseau {{ config('app.timezone') }}).</p>
+    <h1>Il est {{ $heure }}</h1>
+    <p>Nous sommes le {{ $date }} (fuseau {{ config('app.timezone') }}).</p>
 </body>
 </html>
