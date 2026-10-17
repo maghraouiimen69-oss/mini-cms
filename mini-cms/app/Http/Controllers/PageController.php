@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+
 class PageController extends Controller
 {
-    public function home()
+    public function home(): View
     {
-               return view('home');
+        return view('home');
     }
 
     public function about()
@@ -17,7 +19,7 @@ class PageController extends Controller
         ]);
     }
 
-    public function time()
+    public function time(): View
     {
         return view('heure', [
             'heure' => now()->format('H:i'),
