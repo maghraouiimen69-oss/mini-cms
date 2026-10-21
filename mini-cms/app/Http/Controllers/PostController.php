@@ -35,8 +35,9 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9-]+$/', 'unique:posts,slug'],
+            'excerpt' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string', 'min:20'],
-            'is_published' => ['nullable', 'boolean'],
+            'is_published' => ['nullable', 'boolean'], 
         ]);
 
         $validated['is_published'] = $request->boolean('is_published');
