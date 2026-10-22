@@ -53,7 +53,11 @@ class PostController extends Controller
     {
         $post->load('user', 'category', 'tags');
 
-        return view('posts.show', compact('post'));
+        $sameCategory = $post->category
+            ? $post->category->posts()->published()->whereKeyNot($post->id)->get()
+            : collect();
+
+        return view('posts.show', ['post' => $post, 'sameCategory' => $sameCategory]);
     }
 
     public function edit(Post $post): View
