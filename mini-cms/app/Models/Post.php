@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Post extends Model
 {
@@ -13,7 +14,8 @@ class Post extends Model
         'excerpt',
         'body',
         'is_published',
-        'published_at',
+        'published_at',        
+         'category_id',
     ];
 
     protected function casts(): array
@@ -23,7 +25,15 @@ class Post extends Model
             'published_at' => 'datetime',
         ];
     }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
     public function scopePublished(Builder $query): void
     {
         $query->where('is_published', true);
