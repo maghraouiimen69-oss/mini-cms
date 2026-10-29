@@ -9,7 +9,14 @@
             <span class="text-xs font-medium bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full">Brouillon</span>
         @endif
     </div>
-        <p class="text-xs text-gray-500">{{ $post->category?->name ?? 'Sans catégorie' }} - par {{ $post->user?->name ?? 'auteur inconnu' }}</p>
+          <p class="text-xs text-gray-500">
+        @if ($post->category)
+            <a href="{{ route('posts.category', $post->category) }}" class="underline hover:text-indigo-600">{{ $post->category->name }}</a>
+        @else
+            Sans catégorie
+        @endif
+        - par {{ $post->user?->name ?? 'auteur inconnu' }}
+    </p>
 
     <p class="text-sm text-gray-600">{{ $post->excerpt ?? Str::limit($post->body, 120) }}</p>
         @if ($post->tags->isNotEmpty())
