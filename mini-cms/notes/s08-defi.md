@@ -21,3 +21,6 @@ Pourquoi filtrer les tags vides après get() plutôt que d'afficher (0) ?
 
 Combien de requêtes ajoute la liste des tags populaires, et pourquoi pas une par tag ?
 La liste ajoute une seule requête SQL, car withCount compte les articles de tous les tags dans le même SELECT au lieu de faire une requête par tag.
+
+Pourquoi aucune migration, aucun modèle et aucun test n'a changé ?
+Parce que le niveau 2 réutilise seulement des briques déjà en place (la table tags, la relation posts() et les tests existants) : c'est juste une requête de plus dans le contrôleur et un affichage dans la vue, sans nouvelle donnée ni nouvelle logique.
