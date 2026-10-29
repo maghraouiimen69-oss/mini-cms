@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -26,9 +28,12 @@ class PostController extends Controller
         ]);
     }
 
-    public function create(): View
+        public function create(): View
     {
-        return view('posts.create');
+        return view('posts.create', [
+            'categories' => Category::orderBy('name')->get(),
+                        'tags' => Tag::orderBy('name')->get(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -39,12 +44,16 @@ class PostController extends Controller
             'excerpt' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string', 'min:20'],
             'is_published' => ['nullable', 'boolean'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['integer', 'exists:tags,id'],
         ]);
 
         $validated['is_published'] = $request->boolean('is_published');
         $validated['published_at'] = $validated['is_published'] ? now() : null;
 
-        $post = Post::create($validated);
+               $post = Post::create(Arr::except($validated, ['tags']));
+        $post->tags()->sync($validated['tags'] ?? []);
 
         return redirect()->route('posts.show', $post);
     }
@@ -60,11 +69,16 @@ class PostController extends Controller
         return view('posts.show', ['post' => $post, 'sameCategory' => $sameCategory]);
     }
 
-    public function edit(Post $post): View
+            public function edit(Post $post): View
     {
-        return view('posts.edit', compact('post'));
-    }
+        $post->load('tags');
 
+        return view('posts.edit', [
+            'post' => $post,
+            'categories' => Category::orderBy('name')->get(),
+            'tags' => Tag::orderBy('name')->get(),
+        ]);
+    }
     public function update(Request $request, Post $post): RedirectResponse
     {
         $validated = $request->validate([
@@ -73,12 +87,16 @@ class PostController extends Controller
             'excerpt' => ['nullable', 'string', 'max:255'],
             'body' => ['required', 'string', 'min:20'],
             'is_published' => ['nullable', 'boolean'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['integer', 'exists:tags,id'],
         ]);
 
         $validated['is_published'] = $request->boolean('is_published');
         $validated['published_at'] = $validated['is_published'] ? ($post->published_at ?? now()) : null;
 
-        $post->update($validated);
+                $post->update(Arr::except($validated, ['tags']));
+        $post->tags()->sync($validated['tags'] ?? []);
 
         return redirect()->route('posts.show', $post);
     }
