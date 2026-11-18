@@ -77,7 +77,10 @@ class PostController extends Controller
         $post->load('user', 'category', 'tags');
 
         $sameCategory = $post->category
-            ? $post->category->posts()->published()->whereKeyNot($post->id)->get()
+            ? $post->category->posts()->published()->whereKeyNot($post->id)
+                ->with('user', 'category', 'tags')
+                ->latest('published_at')
+                ->get()
             : collect();
 
         return view('posts.show', ['post' => $post, 'sameCategory' => $sameCategory]);
