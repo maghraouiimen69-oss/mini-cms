@@ -1,7 +1,8 @@
 <?php
-
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -17,4 +18,7 @@ Route::get('/posts/archive/{year}', [PostController::class, 'archive'])
 Route::middleware('writable')->group(function () {
     Route::resource('posts', PostController::class);
     Route::patch('/posts/{post}/publication', [PostController::class, 'togglePublication'])->name('posts.publication');
+        Route::prefix('admin')->name('admin.')->group(function () {
+        Route::resource('categories', CategoryController::class)->except('show');
+    });
 });
