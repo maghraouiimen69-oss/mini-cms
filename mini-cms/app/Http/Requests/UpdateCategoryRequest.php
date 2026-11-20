@@ -13,7 +13,7 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('manage-categories');
     }
 
     /**
@@ -29,7 +29,6 @@ class UpdateCategoryRequest extends FormRequest
         ];
     }
 
-    
     /**
      * Get the custom messages for validator errors.
      *

@@ -12,7 +12,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('manage-categories');
     }
 
     /**
@@ -26,8 +26,6 @@ class StoreCategoryRequest extends FormRequest
             'name' => ['required', 'string', 'max:255', 'unique:categories,name'],
             'slug' => ['required', 'string', 'max:255', 'unique:categories,slug'],
         ];
-
-
     }
 
     /**
