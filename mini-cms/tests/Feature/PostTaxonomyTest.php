@@ -3,9 +3,11 @@
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 
 beforeEach(function () {
     $this->withoutVite();
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 function taxonomyPostData(array $overrides = []): array
@@ -87,4 +89,35 @@ it('counts the published posts of each category on the home page', function () {
     $this->get(route('home'))
         ->assertOk()
         ->assertSee('Tutoriels (2)');
+});
+
+it('lists the published posts of a tag by its slug', function () {
+    $tag = Tag::factory()->create(['name' => 'Astuce', 'slug' => 'astuce']);
+    $published = Post::factory()->published()->create(['title' => 'Astuce publiee']);
+    $draft = Post::factory()->create(['title' => 'Astuce en brouillon']);
+    $published->tags()->attach($tag);
+    $draft->tags()->attach($tag);
+    Post::factory()->published()->create(['title' => 'Sans ce tag']);
+
+    $this->get('/posts/tag/astuce')
+        ->assertOk()
+        ->assertSee('Astuce publiee')
+        ->assertDontSee('Astuce en brouillon')
+        ->assertDontSee('Sans ce tag');
+});
+
+it('returns 404 for an unknown tag slug', function () {
+    $this->get('/posts/tag/inconnu')->assertNotFound();
+});
+
+it('shows only the tags that have published posts on the home page', function () {
+    $popular = Tag::factory()->create(['name' => 'Populaire']);
+    $hidden = Tag::factory()->create(['name' => 'Invisible']);
+    Post::factory(2)->published()->create()->each(fn (Post $post) => $post->tags()->attach($popular));
+    Post::factory()->create()->tags()->attach($hidden);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('Populaire (2)')
+        ->assertDontSee('Invisible');
 });

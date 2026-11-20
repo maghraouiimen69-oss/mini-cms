@@ -52,7 +52,7 @@ it('shows only the other published posts of the same category', function () {
         ->assertSee($voisin->title)
         ->assertDontSee('Brouillon meme categorie')
         ->assertDontSee('Article autre categorie')
-        ->assertViewHas('sameCategory', fn ($posts) => $posts->pluck('id')->all() === [$voisin->id]);
+        ->assertViewHas('related', fn ($posts) => $posts->pluck('id')->all() === [$voisin->id]);
 });
 
 it('shows no section for a post without category', function () {

@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\Post;
+use App\Models\User;
 
 beforeEach(function () {
     $this->withoutVite();
+    $this->actingAs(User::factory()->create());
 });
 
 it('publishes a draft and fills published_at', function () {

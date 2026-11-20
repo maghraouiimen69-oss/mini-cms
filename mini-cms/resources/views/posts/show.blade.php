@@ -49,12 +49,12 @@
         </div>
     </article>
 
-    @if ($sameCategory->isNotEmpty())
+    @if ($related->isNotEmpty())
         <section class="mt-10 max-w-2xl">
             <h2 class="text-2xl font-bold mb-4">Dans la même catégorie</h2>
 
             <div class="grid gap-6 md:grid-cols-2">
-                @foreach ($sameCategory as $other)
+                @foreach ($related as $other)
                     <x-post-card :post="$other" />
                 @endforeach
             </div>
